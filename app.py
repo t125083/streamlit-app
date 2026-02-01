@@ -8,18 +8,24 @@ st.title("日本の食料生産量")
 st.subheader('-日本国内の生産量を、1961年から2024年までのデータから種類別に調べることができます。-')
 st.caption('画面左のサイドバーで条件指定')
 
-kind = [i for i in db.columns if i != "kind"]
+kinds = [i for i in db.columns if i != "kind"] #kindを除く1列目の要素をリストにする
+db['年'] = db['kind'] #年の1961~2024の列をdbに追加する
 
 with st.sidebar:
     st.subheader('調べる種類')
-    kind = st.selectbox('選択してください', kind)
-    st.subheader('調べる範囲')
-    minyear = st.slider(label='開始年を選択', min_value=1961, max_value=2024, value=1961)
-    maxyear = st.slider(label='終了年を選択', min_value=1961, max_value=2024, value=2024)
-    chart = st.radio("グラフ選択", ["折れ線", "棒グラフ"])
+    kind = st.selectbox('選択してください', kinds)
+    st.subheader('グラフの種類')
+    chart = st.radio('選択してください', ["折れ線", "棒グラフ"])
 
-fdb = [i for i in db if i != minyear]
+fdb = db[["年", kind]] #選択したkindだけ取る
+
 if chart == "折れ線":
-    st.line_chart(db)
+    fig = px.line(fdb, x="年", y=kind, labels={kind:f'{kind}  (1000トン)'})
 elif chart == "棒グラフ":
-    st.bar_chart(db)
+    fig = px.bar(fdb, x="年", y=kind)
+
+st.text(f"現在選択中  --{kind}--")
+st.plotly_chart(fig)
+
+st.text("すべてのデータ")
+st.bar_chart(db, x="年")
