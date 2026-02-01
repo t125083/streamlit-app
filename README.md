@@ -12,6 +12,8 @@
   　グラフの概形を選択できるようにしたかったため
   st.toggle
   　常に表示する必要がなかったため
+  st.conteiner
+    枠線を追加したかったため
 
 参考にしたアプリのタイトル
 　Stock Peer Analysis Dashboard
